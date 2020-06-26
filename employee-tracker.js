@@ -2,19 +2,20 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 
 require("console.table");
+require("dotenv").config();
 
 const connection = mysql.createConnection({
-    host: "localhost",
+    host: process.env.DB_HOST,
 
     //Your port; 
     port: 3306,
 
     //your username
-    user: "",
+    user: process.env.DB_USERNAME,
 
     //your password
-    password: "",
-    database: "employee_trackerDB"
+    password: process.env.DB_PASSWORD,
+    database: process.env.DATABASE_db
 
 });
 
@@ -346,7 +347,7 @@ JOIN employee m
 }
 
 function roleArray(employeeChoices) {
-    console.log("Updating an role");
+    console.log("Updating a role");
 
     var query =
         `SELECT r.id, r.title, r.salary 
@@ -427,7 +428,6 @@ function addRole() {
     connection.query(query, function (err, res) {
         if (err) throw err;
 
-        // (callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any)
         const departmentChoices = res.map(({
             id,
             name
