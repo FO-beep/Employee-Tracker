@@ -248,7 +248,7 @@ function promptInsert(roleChoices) {
 
 
 
-//Remove, Delete
+// Remove, Delete Employees
 
 
 function removeEmployees() {
@@ -307,7 +307,7 @@ function promptDelete(deleteEmployeeChoices) {
         });
 }
 
-//========================================= 6."Update Employee Role" / UPDATE,
+// ----------- "Update Employee Role" ------- //
 
 function updateEmployeeRole() {
     employeeArray();
@@ -412,7 +412,7 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
 
 
 
-//////////////////========================= 7."Add Role" / CREATE: INSERT INTO
+// "Add Role" / CREATE: INSERT INTO ---- //
 
 function addRole() {
 
