@@ -38,8 +38,9 @@ function promptOne() {
                 "Remove Employees",
                 "Update Employee Role",
                 "Add Role",
+                "View Department Budget",
 
-                "End"
+                "Exit"
             ]
         })
         .then(function ({
@@ -65,10 +66,12 @@ function promptOne() {
                 case "Add Role":
                     addRole();
                     break;
+                case "View Department Budget":
+                    viewBudget();
+                    break;
 
 
-
-                case "End":
+                case "Exit":
                     connection.end();
                     break;
             }
@@ -169,9 +172,7 @@ WHERE d.id = ?`
 
 
 
-
-
-
+// add new employee
 function addEmployee() {
     console.log("Inserting an employee!")
 
@@ -416,14 +417,14 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
 
 function addRole() {
 
-    var query =
-        `SELECT d.id, d.name, r.salary AS budget
- FROM employee e
- JOIN role r
- ON e.role_id = r.id
- JOIN department d
- ON d.id = r.department_id
- GROUP BY d.id, d.name`
+    var query = `SELECT * FROM department`
+    // `SELECT d.id, d.name, r.salary AS budget
+    //  FROM employee e
+    //  JOIN role r
+    //  ON e.role_id = r.id
+    //  JOIN department d
+    //  ON d.id = r.department_id
+    //  GROUP BY d.id, d.name`
 
     connection.query(query, function (err, res) {
         if (err) throw err;
@@ -468,8 +469,8 @@ function promptAddRole(departmentChoices) {
             var query = `INSERT INTO role SET ?`
 
             connection.query(query, {
-                    title: answer.title,
-                    salary: answer.salary,
+                    title: answer.roleTitle,
+                    salary: answer.roleSalary,
                     department_id: answer.departmentId
                 },
                 function (err, res) {
@@ -478,8 +479,50 @@ function promptAddRole(departmentChoices) {
                     console.table(res);
                     console.log("Role Inserted!");
 
-                    promptOne();
+                    // promptOne();
+                    viewRoles();
                 });
 
         });
 }
+
+
+viewRoles = () => {
+    var query = "SELECT * FROM role";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        console.log(res.length + " roles found!");
+        console.table("All Roles:", res);
+        promptOne();
+    });
+};
+
+
+
+// ------- View Department Budget ------ //
+
+function viewBudget() {
+    console.log("Total utilized department budget");
+
+    var query = ` SELECT department.name AS department, role.salary FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY department, name ASC`
+
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+
+
+
+        const deptBudget = res.map(data => ({
+            value: data.id,
+            department: data.department_id,
+            salary: data.salary
+        }));
+
+        console.table(res);
+        console.log("Budget viewed!\n");
+
+
+        promptOne();
+
+    });
+
+};
